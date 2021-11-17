@@ -1,6 +1,7 @@
 package mahonia
 
 import (
+	"fmt"
 	"io/ioutil"
 )
 
@@ -37,6 +38,7 @@ func (d Decoder) ConvertString(s string) string {
 	defer func() {
 		eRecover := recover()
 		if eRecover != nil {
+			fmt.Println("i==", i)
 			ioutil.WriteFile("tmp.bin", []byte(s), 0777)
 		}
 	}()
