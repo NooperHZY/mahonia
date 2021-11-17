@@ -1,5 +1,9 @@
 package mahonia
 
+import (
+	"io/ioutil"
+)
+
 // ConvertString converts a  string from UTF-8 to e's encoding.
 func (e Encoder) ConvertString(s string) string {
 	dest := make([]byte, len(s)+10)
@@ -29,11 +33,20 @@ func (e Encoder) ConvertString(s string) string {
 
 // ConvertString converts a string from d's encoding to UTF-8.
 func (d Decoder) ConvertString(s string) string {
+	i := 0
+	defer func() {
+		eRecover := recover()
+		if eRecover != nil {
+			ioutil.WriteFile("tmp.bin", []byte(s), 0777)
+		}
+	}()
+
 	bytes := []byte(s)
 	runes := make([]rune, len(s))
 	destPos := 0
 
 	for len(bytes) > 0 {
+		i++
 		c, size, status := d(bytes)
 
 		if status == STATE_ONLY {
